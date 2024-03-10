@@ -10,7 +10,8 @@ config_version=5
 
 [application]
 
-config/name="Dynamic Water 2D"
+config/name="Dynamic Water"
+config/description="CaptainProton42's Dynamic Water Demo, ported to Godot 4"
 run/main_scene="res://Main.tscn"
 config/features=PackedStringArray("4.2")
 config/icon="res://icon.png"
