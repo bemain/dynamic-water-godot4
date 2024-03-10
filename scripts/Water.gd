@@ -1,10 +1,11 @@
-extends MeshInstance3D
+extends MeshInstance2D
 
 @onready var simulation_viewport: SubViewport = $SimulationViewport # Viewport that contains the simulation texture
 @onready var collision_viewport: SubViewport = $CollisionViewport # Viewport that contains the collision texture
 @onready var simulation_material: ShaderMaterial = simulation_viewport.get_node("ColorRect").material # Material that contains the simulation shader
-@onready var surface_material: ShaderMaterial = get_surface_override_material(0)
+@onready var surface_material: ShaderMaterial = material
 
+# TODO: Make grid_points a Vector2
 @export_range(1, 99999) var grid_points: int = 512: set = set_grid_points, get = get_grid_points # number of grid points in discretisation
 @export var c = 0.065 # wave speed
 @export var simulation_amplitude = 0.5  # amplitude of newly created waves in the simulation
@@ -71,10 +72,13 @@ func get_grid_points():
 func _ready():
 	simulation_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	
+	var root_viewport = get_tree().root.get_viewport()
+	root_viewport.canvas_cull_mask = 1
+	collision_viewport.world_2d = root_viewport.world_2d
+	
 	# Set simulation and collision textures from viewports
 	simulation_texture = simulation_viewport.get_texture()
 	collision_texture = collision_viewport.get_texture()
-	#simulation_texture.flags = ViewportTexture.FLAG_FILTER # improves quality for low grid resolutions
 	
 	set_grid_points(grid_points)
 	
@@ -88,7 +92,6 @@ func _initialize():
 	# Create an empty texture
 	var img = Image.create(grid_points, grid_points, false, Image.FORMAT_RGB8)
 	var tex = ImageTexture.create_from_image(img)
-	#tex.flags = 0
 
 	# Initialize the simulation with the empty texture
 	simulation_material.set_shader_parameter("z_tex", tex)

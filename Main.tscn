@@ -1,75 +1,82 @@
-[gd_scene load_steps=16 format=3 uid="uid://n4ja2kf5eolh"]
+[gd_scene load_steps=17 format=3 uid="uid://uutkl7ek4jnl"]
 
-[ext_resource type="Script" path="res://scripts/Main.gd" id="1_gxgp5"]
+[ext_resource type="Script" path="res://scripts/Player.gd" id="1_fsoak"]
 [ext_resource type="Script" path="res://scripts/Water.gd" id="1_oe3vm"]
-[ext_resource type="ArrayMesh" path="res://assets/meshes/water.tres" id="1_roj5b"]
-[ext_resource type="Material" uid="uid://ksjmu4xdt2kc" path="res://assets/materials/water.tres" id="2_5bady"]
 [ext_resource type="Shader" path="res://assets/shaders/simulation.gdshader" id="2_5clb5"]
+[ext_resource type="Shader" path="res://assets/shaders/collision.gdshader" id="2_prvos"]
 [ext_resource type="Texture2D" uid="uid://yfofnfq7etgi" path="res://assets/textures/land_texture.png" id="3_l6lvc"]
-[ext_resource type="Script" path="res://scripts/Camera.gd" id="6_fjpoi"]
-[ext_resource type="ArrayMesh" uid="uid://ca5o0564ox25f" path="res://assets/meshes/island.obj" id="8_uuhyu"]
-[ext_resource type="Shape3D" uid="uid://8ccfq83kb8e6" path="res://IslandCollisionShape.tres" id="9_hdul3"]
+[ext_resource type="Texture2D" uid="uid://cnl8jdsfud6dh" path="res://icon.png" id="3_q3r7w"]
+[ext_resource type="Shader" path="res://assets/shaders/water.gdshader" id="4_ktuxe"]
+[ext_resource type="Texture2D" uid="uid://2sprf4iqfrk7" path="res://assets/images/background.jpg" id="8_18hw0"]
 
-[sub_resource type="Environment" id="Environment_nlh8x"]
-background_mode = 1
-background_color = Color(1, 0.921569, 0.501961, 1)
-ambient_light_color = Color(1, 1, 1, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_f4alp"]
+shader = ExtResource("2_prvos")
+shader_parameter/speed = null
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_tdvcb"]
+[sub_resource type="BoxMesh" id="BoxMesh_c1ka3"]
+size = Vector3(50, 50, 0)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hn6dc"]
+size = Vector2(50, 50)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hmkod"]
+shader = ExtResource("4_ktuxe")
+shader_parameter/water_color = Color(0.0901961, 0.533333, 0.380392, 1)
+shader_parameter/amplitude = 0.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_0spt3"]
+size = Vector3(200, 200, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cdx4b"]
 shader = ExtResource("2_5clb5")
 shader_parameter/a = 0.034
 shader_parameter/amplitude = null
 shader_parameter/grid_points = null
 
-[sub_resource type="Environment" id="Environment_7dkrj"]
-background_mode = 1
-ambient_light_source = 2
-ambient_light_color = Color(1, 1, 1, 1)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_x3lg8"]
-size = Vector3(50, 5, 50)
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_8gsry"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_gynhi"]
 viewport_path = NodePath("Water/CollisionViewport")
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_rhdis"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_j51bp"]
 viewport_path = NodePath("Water/SimulationViewport")
 
-[node name="Main" type="Node3D"]
-script = ExtResource("1_gxgp5")
+[node name="Main" type="Node2D"]
+visibility_layer = 3
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_nlh8x")
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(982, 566)
+texture = ExtResource("8_18hw0")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.366546, -0.252216, -0.895562, -0.0358341, 0.965669, -0.257293, 0.92971, -0.0622182, -0.363, 0, 21, 0)
+[node name="Player" type="CharacterBody2D" parent="."]
+visibility_layer = 3
+position = Vector2(100, 100)
+script = ExtResource("1_fsoak")
+metadata/_edit_group_ = true
 
-[node name="CameraPivot" type="Node3D" parent="."]
-transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0, 0)
+[node name="CollisionMesh" type="MeshInstance2D" parent="Player"]
+visibility_layer = 2
+material = SubResource("ShaderMaterial_f4alp")
+mesh = SubResource("BoxMesh_c1ka3")
 
-[node name="Camera3D" type="Camera3D" parent="CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 65, 75)
-cull_mask = 1048573
-current = true
-fov = 45.0
-near = 0.1
-far = 1156.5
-script = ExtResource("6_fjpoi")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("RectangleShape2D_hn6dc")
 
-[node name="Water" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -12.5, 0)
-mesh = ExtResource("1_roj5b")
-surface_material_override/0 = ExtResource("2_5bady")
+[node name="Sprite2D" type="Sprite2D" parent="Player"]
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("3_q3r7w")
+
+[node name="Water" type="MeshInstance2D" parent="."]
+material = SubResource("ShaderMaterial_hmkod")
+mesh = SubResource("BoxMesh_0spt3")
 script = ExtResource("1_oe3vm")
 land_texture = ExtResource("3_l6lvc")
-metadata/_edit_lock_ = true
 
 [node name="SimulationViewport" type="SubViewport" parent="Water"]
-size = Vector2i(200, 200)
+disable_3d = true
+gui_disable_input = true
 render_target_update_mode = 1
 
 [node name="ColorRect" type="ColorRect" parent="Water/SimulationViewport"]
-material = SubResource("ShaderMaterial_tdvcb")
+material = SubResource("ShaderMaterial_cdx4b")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -77,33 +84,10 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="CollisionViewport" type="SubViewport" parent="Water"]
-size = Vector2i(200, 200)
+disable_3d = true
+gui_disable_input = true
+canvas_cull_mask = 4294966274
 render_target_update_mode = 4
-
-[node name="CollisionCamera" type="Camera3D" parent="Water/CollisionViewport"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1, 0)
-cull_mask = 2
-environment = SubResource("Environment_7dkrj")
-projection = 1
-size = 50.0
-near = 1.0
-far = 9999.0
-
-[node name="CrateSpawn" type="Area3D" parent="."]
-collision_layer = 4
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CrateSpawn"]
-shape = SubResource("BoxShape3D_x3lg8")
-
-[node name="Island" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, -0.605, 13.827)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Island"]
-mesh = ExtResource("8_uuhyu")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Island"]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-shape = ExtResource("9_hdul3")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -111,12 +95,12 @@ shape = ExtResource("9_hdul3")
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -200.0
-offset_right = 200.0
+offset_top = -512.0
+offset_right = 512.0
 grow_vertical = 0
-texture = SubResource("ViewportTexture_8gsry")
+texture = SubResource("ViewportTexture_gynhi")
 
 [node name="SimulationVisualisation" type="TextureRect" parent="UI"]
-offset_right = 200.0
-offset_bottom = 200.0
-texture = SubResource("ViewportTexture_rhdis")
+offset_right = 512.0
+offset_bottom = 512.0
+texture = SubResource("ViewportTexture_j51bp")

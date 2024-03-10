@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://4immr03oyvqb"]
-
-[ext_resource type="Script" path="res://scripts/BouyancyProbe.gd" id="1_vv0nf"]
-
-[node name="BouyancyProbe" type="Marker3D"]
-script = ExtResource("1_vv0nf")

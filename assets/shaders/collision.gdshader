@@ -1,9 +1,7 @@
-shader_type spatial;
+shader_type canvas_item;
 
 uniform float speed;
 
-render_mode cull_front;
-
 void fragment() {
-	ALBEDO.r = speed;
+	COLOR.r = speed;
 }
