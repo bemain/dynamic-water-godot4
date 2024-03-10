@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://cqbpj2pmrsep"
+path="res://.godot/imported/surfboard.obj-4502d20bd2b61f64012f016059723df7.mesh"
+
+[deps]
+
+files=["res://.godot/imported/surfboard.obj-4502d20bd2b61f64012f016059723df7.mesh"]
+
+source_file="res://assets/meshes/surfboard.obj"
+dest_files=["res://.godot/imported/surfboard.obj-4502d20bd2b61f64012f016059723df7.mesh", "res://.godot/imported/surfboard.obj-4502d20bd2b61f64012f016059723df7.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

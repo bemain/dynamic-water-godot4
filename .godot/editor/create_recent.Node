@@ -1,0 +1,14 @@
+CollisionShape3D
+MeshInstance3D
+StaticBody3D
+DirectionalLight3D
+SubViewportContainer
+Area3D
+Node3D
+Marker3D
+RigidBody3D
+WorldEnvironment
+Camera3D
+TextureRect
+CanvasLayer
+ColorRect
