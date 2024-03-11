@@ -10,7 +10,7 @@ extends MeshInstance2D
 @export var c = 0.065 # wave speed
 @export var simulation_amplitude = 0.5  # amplitude of newly created waves in the simulation
 @export var mesh_amplitude = 1.0 # amplitude of waves in the mesh shader
-@export var land_texture : Texture
+@export var land_texture : Texture = ImageTexture.create_from_image(Image.create(1, 1, false, Image.FORMAT_RGB8))
 
 # Size of the water body in both dimensions
 var water_size = 50.0

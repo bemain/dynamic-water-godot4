@@ -33,7 +33,7 @@ void fragment() {
 		z_new_neg = amplitude * collision_state_old;
 	}
 	
-	// Avoid waves bouncing on the edges
+	// Avoid waves bouncing on the borders
 	if (UV.x <= pix_size.x || UV.x >= 1.0f - pix_size.x 
 	 || UV.y <= pix_size.y || UV.y >= 1.0f - pix_size.y) {
 		z_new_pos = 0.0f;
