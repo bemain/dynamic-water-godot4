@@ -6,7 +6,7 @@ extends MeshInstance2D
 @onready var surface_material: ShaderMaterial = material
 
 # TODO: Make grid_points a Vector2
-@export_range(1, 99999) var grid_points: int = 512: set = set_grid_points, get = get_grid_points # number of grid points in discretisation
+@export var grid_points: Vector2i = Vector2i(512, 512): set = set_grid_points, get = get_grid_points # number of grid points in discretisation
 @export var c = 0.065 # wave speed
 @export var simulation_amplitude = 0.5  # amplitude of newly created waves in the simulation
 @export var mesh_amplitude = 1.0 # amplitude of waves in the mesh shader
@@ -25,6 +25,7 @@ var collision_texture: ViewportTexture
 func update_collision_texture():
 	# Update the collision maps
 	var img = collision_texture.get_image() # Get the currently rendered map
+	img.resize(grid_points.x, grid_points.y) # Scale to the correct grid size
 	# Set current map as old map
 	var old_collision_texture = simulation_material.get_shader_parameter("collision_texture")
 	simulation_material.get_shader_parameter("old_collision_texture").set_image(old_collision_texture.get_image())
@@ -60,16 +61,22 @@ func set_grid_points(p_grid_points):
 	grid_points = p_grid_points
 	if is_inside_tree():
 		# Set viewport sizes to simulation grid size
-		simulation_viewport.size = Vector2(grid_points, grid_points)
-		collision_viewport.size = Vector2(grid_points, grid_points)
-		simulation_viewport.get_node("ColorRect").get_rect().size = Vector2(grid_points, grid_points)
+		simulation_viewport.size = grid_points
+		simulation_viewport.get_node("ColorRect").get_rect().size = Vector2(grid_points)
 		simulation_material.set_shader_parameter("grid_points", grid_points)
 		_initialize()
 
 func get_grid_points():
 	return grid_points
 
+func resize_window():
+	if is_inside_tree():
+		collision_viewport.size = DisplayServer.window_get_size()
+
 func _ready():
+	# When the window changes size, resize collision_viewport
+	get_tree().get_root().size_changed.connect(resize_window)
+	
 	simulation_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	
 	var root_viewport = get_tree().root.get_viewport()
@@ -80,6 +87,7 @@ func _ready():
 	simulation_texture = simulation_viewport.get_texture()
 	collision_texture = collision_viewport.get_texture()
 	
+	resize_window()
 	set_grid_points(grid_points)
 	
 	# Set uniforms of mesh shader
@@ -90,7 +98,7 @@ func _ready():
 
 func _initialize():
 	# Create an empty texture
-	var img = Image.create(grid_points, grid_points, false, Image.FORMAT_RGB8)
+	var img = Image.create(grid_points.x, grid_points.y, false, Image.FORMAT_RGB8)
 	var tex = ImageTexture.create_from_image(img)
 
 	# Initialize the simulation with the empty texture
@@ -102,8 +110,7 @@ func _initialize():
 
 	# Set simulation parameters
 	var delta = 1.0 / ProjectSettings.get_setting("physics/common/physics_ticks_per_second")
-	var a = c*delta*grid_points
-	a *= a
+	var a = c*c* delta*delta* grid_points.x * grid_points.y
 	if a > 0.5:
 		push_warning("a > 0.5; Unstable simulation.")
 	simulation_material.set_shader_parameter("a", a)
@@ -114,14 +121,14 @@ func get_height(global_pos):
 	var local_pos = to_local(global_pos)
 
 	# Get pixel position
-	var y = int((local_pos.x + water_size / 2.0) / water_size * (grid_points))
-	var x =	int((local_pos.z + water_size / 2.0) / water_size * (grid_points))
+	var y = int((local_pos.x + water_size / 2.0) / water_size * (grid_points.y))
+	var x =	int((local_pos.z + water_size / 2.0) / water_size * (grid_points.x))
 
 	# Just return a very low height when not inside texture
-	if x > grid_points - 1 or y > grid_points - 1 or x < 0 or y < 0:
+	if x > grid_points.x - 1 or y > grid_points.y - 1 or x < 0 or y < 0:
 		return -99999.9
 
 	# Get height from surface data (in RGB8 format)
 	# This is faster than locking the image and using get_pixel()
-	var height = mesh_amplitude * (surface_data[3*(x*(grid_points) + y)] - surface_data[3*(x*(grid_points) + y) + 1]) / 255.0
+	var height = mesh_amplitude * (surface_data[3*(x*(grid_points.x) + y)] - surface_data[3*(x*(grid_points.x) + y) + 1]) / 255.0
 	return height

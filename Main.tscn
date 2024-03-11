@@ -43,7 +43,7 @@ viewport_path = NodePath("Water/SimulationViewport")
 visibility_layer = 3
 
 [node name="Background" type="Sprite2D" parent="."]
-position = Vector2(982, 566)
+position = Vector2(960, 540)
 texture = ExtResource("8_18hw0")
 
 [node name="Player" type="CharacterBody2D" parent="."]
@@ -68,11 +68,13 @@ texture = ExtResource("3_q3r7w")
 material = SubResource("ShaderMaterial_hmkod")
 mesh = SubResource("BoxMesh_0spt3")
 script = ExtResource("1_oe3vm")
+grid_points = Vector2i(480, 256)
 land_texture = ExtResource("3_l6lvc")
 
 [node name="SimulationViewport" type="SubViewport" parent="Water"]
 disable_3d = true
 gui_disable_input = true
+size = Vector2i(480, 256)
 render_target_update_mode = 1
 
 [node name="ColorRect" type="ColorRect" parent="Water/SimulationViewport"]
@@ -87,6 +89,7 @@ grow_vertical = 2
 disable_3d = true
 gui_disable_input = true
 canvas_cull_mask = 4294966274
+size = Vector2i(1920, 1080)
 render_target_update_mode = 4
 
 [node name="UI" type="CanvasLayer" parent="."]
@@ -95,12 +98,14 @@ render_target_update_mode = 4
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -512.0
-offset_right = 512.0
+offset_top = -368.0
+offset_right = 1920.0
+offset_bottom = 712.0
 grow_vertical = 0
+scale = Vector2(0.25, 0.25)
 texture = SubResource("ViewportTexture_gynhi")
 
 [node name="SimulationVisualisation" type="TextureRect" parent="UI"]
-offset_right = 512.0
-offset_bottom = 512.0
+offset_right = 480.0
+offset_bottom = 256.0
 texture = SubResource("ViewportTexture_j51bp")

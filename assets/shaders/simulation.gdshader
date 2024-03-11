@@ -2,7 +2,7 @@ shader_type canvas_item;
 
 uniform float a;
 uniform float amplitude;
-uniform float grid_points;
+uniform vec2 grid_points;
 
 uniform sampler2D z_tex;
 uniform sampler2D old_z_tex;
@@ -13,12 +13,12 @@ uniform sampler2D old_collision_texture;
 uniform sampler2D land_texture;
 
 void fragment() {
-	float pix_size = 1.0f/grid_points;
+	vec2 pix_size = vec2(1.0f)/grid_points;
 	
-	vec4 z = a * (texture(z_tex, UV + vec2(pix_size, 0.0f))
-					   + texture(z_tex, UV - vec2(pix_size, 0.0f))
-					   + texture(z_tex, UV + vec2(0.0f, pix_size)) 
-					   + texture(z_tex, UV - vec2(0.0f, pix_size)))
+	vec4 z = a * (texture(z_tex, UV + vec2(pix_size.x, 0.0f))
+					   + texture(z_tex, UV - vec2(pix_size.x, 0.0f))
+					   + texture(z_tex, UV + vec2(0.0f, pix_size.y)) 
+					   + texture(z_tex, UV - vec2(0.0f, pix_size.y)))
 				  + (2.0f - 4.0f * a) * (texture(z_tex, UV)) - (texture(old_z_tex, UV));
 				
 	float z_new_pos = z.r; // positive waves are stored in the red channel
