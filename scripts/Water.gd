@@ -1,4 +1,4 @@
-extends MeshInstance2D
+extends Node2D
 
 ## The number of grid points in the simulation
 @export var grid_points: Vector2i = Vector2i(512, 512): set = set_grid_points
